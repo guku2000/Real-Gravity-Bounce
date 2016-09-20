@@ -53,9 +53,11 @@ class Cube(pygame.sprite.Sprite):
         self.rect.topleft = self.x,self.y
 
 class Level:
-    def GetLayout(lvln = 1):
+    def GetLayout(self,lvln = 1):
+        self.lvln=lvln
         print("getting layout")
-        layout= open('resources/maps/' + lvln + '/layout.rgb')
+        self.layout= open('resources/maps/' + str(self.lvln) + '/layout.rgb','r')
+        self.layout.read()
     def GetImage():
         print("getting image")
         
@@ -82,8 +84,11 @@ class mainG:
             self.clock.tick(60)
     def LoadGame(self):
         #load everything we need
+        
         self.cube=Cube(self.width,self.height)
         self.allsprites = pygame.sprite.RenderPlain((self.cube))
+        self.level = Level()
+        self.level.GetLayout()
 
 def main():
     maingame = mainG()
