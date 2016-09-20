@@ -5,7 +5,7 @@ from pygame.locals import *
 if not pygame.font: print ('Warning, fonts disabled')
 if not pygame.mixer: print ('Warning, sound disabled')
 print (os.getcwd())
-
+#Made by Julian Kinneavy in a very bad way
 class Cube(pygame.sprite.Sprite):
     def __init__(self,width,height):
         self.width = width
