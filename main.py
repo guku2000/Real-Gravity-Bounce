@@ -57,7 +57,13 @@ class Level:
         self.lvln=lvln
         print("getting layout")
         self.layout= open('resources/maps/' + str(self.lvln) + '/layout.rgb','r')
-        self.layout.read()
+        lrow = []
+        linen = 0
+        for line in self.layout:
+            lrow.append([])
+            for unit in line:
+                elements[
+                
     def GetImage():
         print("getting image")
         
@@ -93,6 +99,7 @@ class mainG:
 def main():
     maingame = mainG()
     maingame.MainLoop()
+    
     
 
 if __name__ == '__main__':
