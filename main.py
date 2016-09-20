@@ -24,10 +24,11 @@ class Cube(pygame.sprite.Sprite):
             self.v-=.4
             self.y+=self.v
         self.rect.topleft = self.x,self.y
-
-        
+            
+        print('update')
     def switchg(self):
         print('test')
+        """gitTest"""
 
 class mainG:
     def __init__(self,width =630,height=480):
