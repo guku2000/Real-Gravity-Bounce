@@ -57,17 +57,32 @@ class Level:
         self.lvln=lvln
         print("getting layout")
         self.layout= open('resources/maps/' + str(self.lvln) + '/layout.rgb','r')
-        lrow = []
+        self.mapar = []
         linen = 0
         for line in self.layout:
-            lrow.append([])
+            self.mapar.append([])
             for unit in line:
-                elements[
-                
-    def GetImage():
-        print("getting image")
+                if unit != '\n':
+                    self.mapar[linen].append(int(unit))
+            linen+=1
+        print(self.mapar)
+    def drawMap(self,lvln = 1):
+        rown=0
+        scol=0
+        draw=True
+        for row in self.mapar:
+            column=0
+            for num in self.mapar[row]:
+                if self.mapar[rown][column]==self.mapar[row][(column+1)]:
+                    pass
+                else:
+                    drawrect(row,column,length,num)
+                column+=1
+                    
+    def drawrect(self,row,column,length,colorcode):
+        pass
         
-
+        
 class mainG:
     def __init__(self,width =1024,height=512):
         pygame.init()
@@ -94,7 +109,7 @@ class mainG:
         self.cube=Cube(self.width,self.height)
         self.allsprites = pygame.sprite.RenderPlain((self.cube))
         self.level = Level()
-        self.level.GetLayout()
+        self.level.drawMap()
 
 def main():
     maingame = mainG()
