@@ -1,11 +1,11 @@
 import pygame
 import os, sys
 from pygame.locals import *
-
+#Made by Julian -_-
+#This is a 32bit game resulting in a window that is 32x16 wide
 if not pygame.font: print ('Warning, fonts disabled')
 if not pygame.mixer: print ('Warning, sound disabled')
 print (os.getcwd())
-#Made by Julian Kinneavy in a very bad way
 class Cube(pygame.sprite.Sprite):
     def __init__(self,width,height):
         self.width = width
@@ -14,7 +14,7 @@ class Cube(pygame.sprite.Sprite):
         self.color = "red"
         self.image= pygame.image.load('resources/sprites/cube/red.png')
         self.rect = self.image.get_rect()
-        self.x,self.y = 150, 208
+        self.x,self.y = self.width//4, self.height//2
         self.v = 0
         self.rect.topleft= (self.x, self.y)
         self.gravitydown = True
@@ -51,11 +51,17 @@ class Cube(pygame.sprite.Sprite):
                 self.v-=.4
                 self.y+=self.v
         self.rect.topleft = self.x,self.y
-            
+
+class Level:
+    def GetLayout(lvln = 1):
+        print("getting layout")
+        layout= open('resources/maps/' + lvln + '/layout.rgb')
+    def GetImage():
+        print("getting image")
         
 
 class mainG:
-    def __init__(self,width =1280,height=720):
+    def __init__(self,width =1024,height=512):
         pygame.init()
         self.width = width
         self.height = height
