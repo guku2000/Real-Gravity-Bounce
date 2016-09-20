@@ -7,31 +7,55 @@ if not pygame.mixer: print ('Warning, sound disabled')
 print (os.getcwd())
 
 class Cube(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,width,height):
+        self.width = width
+        self.height = height
         pygame.sprite.Sprite.__init__(self)
+        self.color = "red"
         self.image= pygame.image.load('resources/sprites/cube/red.png')
         self.rect = self.image.get_rect()
-        self.x,self.y = 150, 200
+        self.x,self.y = 150, 208
         self.v = 0
         self.rect.topleft= (self.x, self.y)
         self.gravitydown = True
+        
     def update(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    print("g switch")
+                    self.v = 0
+                    if self.gravitydown == True:
+                        self.gravitydown = False
+                    elif self.gravitydown == False:
+                        self.gravitydown = True
+                if event.key == pygame.K_g:
+                    print("c switch")
+                    if self.color == 'red':
+                        self.color = 'green'
+                        self.image= pygame.image.load('resources/sprites/cube/green.png')
+                    elif self.color == 'green':
+                        self.color = 'blue'
+                        self.image= pygame.image.load('resources/sprites/cube/blue.png')
+                    elif self.color == 'blue':
+                        self.color = 'red'
+                        self.image= pygame.image.load('resources/sprites/cube/red.png')
         
         if self.gravitydown == True:
-            self.v+=.4
-            self.y+=self.v
+            if self.rect.bottom< self.height:
+                self.v+=.4
+                self.y+=self.v
+
         elif self.gravitydown == False:
-            self.v-=.4
-            self.y+=self.v
+            if self.rect.top>0:
+                self.v-=.4
+                self.y+=self.v
         self.rect.topleft = self.x,self.y
             
-        print('update')
-    def switchg(self):
-        print('test')
-        """gitTest"""
+        
 
 class mainG:
-    def __init__(self,width =630,height=480):
+    def __init__(self,width =1280,height=720):
         pygame.init()
         self.width = width
         self.height = height
@@ -52,7 +76,7 @@ class mainG:
             self.clock.tick(60)
     def LoadGame(self):
         #load everything we need
-        self.cube=Cube()
+        self.cube=Cube(self.width,self.height)
         self.allsprites = pygame.sprite.RenderPlain((self.cube))
 
 def main():
