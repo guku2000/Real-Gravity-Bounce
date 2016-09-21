@@ -1,6 +1,7 @@
 import pygame
 import os, sys
 from pygame.locals import *
+from pygame import draw
 #Made by Julian -_-
 #This is a 32bit game resulting in a window that is 32x16 wide
 if not pygame.font: print ('Warning, fonts disabled')
@@ -50,9 +51,34 @@ class Cube(pygame.sprite.Sprite):
             if self.rect.top>0:
                 self.v-=.4
                 self.y+=self.v
-        self.rect.topleft = self.x,self.y
+        self.rect.topleft = self.x,self.y 
+class mainG:
+    def __init__(self,width =1024,height=512):
+        pygame.init()
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.clock = pygame.time.Clock()
+        pygame.display.set_caption('Real Gravity Bounce')
+        
+    def MainLoop(self):
+        self.LoadGame()
+        while 1:
+            self.screen.fill((255,255,255))
+            self.allsprites.update()
+            self.allsprites.draw(self.screen)
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    sys.exit()
+            pygame.display.update()
+            self.clock.tick(60)
+    def LoadGame(self):
+        #load everything we need
+        self.cube=Cube(self.width,self.height)
+        self.allsprites = pygame.sprite.RenderPlain((self.cube))
+        self.GetLayout()
+        self.drawMap()
 
-class Level:
     def GetLayout(self,lvln = 1):
         self.lvln=lvln
         print("getting layout")
@@ -65,6 +91,7 @@ class Level:
                 if unit != '\n':
                     self.mapar[linen].append(int(unit))
             linen+=1
+
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
@@ -89,41 +116,13 @@ class Level:
             rownum+=1
                     
     def drawrect(self,row,column,length,colorcode):
+        self.level_sprites = pygame.sprite.Group()
         print(row)
         if colorcode == 0:
             pass
         if colorcode == 1:
-            self.draw.rect(pygame,(255,0,0),((row-length)*32,column*32,(row+1)*32,(column+1)*32),width=0)
-        
-        
-class mainG:
-    def __init__(self,width =1024,height=512):
-        pygame.init()
-        self.width = width
-        self.height = height
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.clock = pygame.time.Clock()
-        pygame.display.set_caption('Real Gravity Bounce')
-        
-    def MainLoop(self):
-        self.LoadGame()
-        while 1:
-            self.screen.fill((255,255,255))
-            self.allsprites.update()
-            self.allsprites.draw(self.screen)
-            for event in pygame.event.get():
-                if event.type==pygame.QUIT:
-                    sys.exit()
-            pygame.display.update()
-            self.clock.tick(60)
-    def LoadGame(self):
-        #load everything we need
-        
-        self.cube=Cube(self.width,self.height)
-        self.allsprites = pygame.sprite.RenderPlain((self.cube))
-        self.level = Level()
-        self.level.GetLayout()
-        self.level.drawMap()
+            print("red")
+            pygame.draw.rect(self.screen,(255,0,0),((row-length)*32,column*32,(length+1)*32,32),10)
 
 def main():
     maingame = mainG()
