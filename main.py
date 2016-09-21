@@ -93,6 +93,7 @@ class Level:
         if colorcode == 0:
             pass
         if colorcode == 1:
+            self.draw.rect(pygame,(255,0,0),((row-length)*32,column*32,(row+1)*32,(column+1)*32),width=0)
         
         
 class mainG:
