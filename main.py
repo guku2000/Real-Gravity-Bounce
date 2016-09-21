@@ -65,22 +65,34 @@ class Level:
                 if unit != '\n':
                     self.mapar[linen].append(int(unit))
             linen+=1
-        print(self.mapar)
     def drawMap(self,lvln = 1):
-        rown=0
-        scol=0
-        draw=True
+        length=0
+        rownum = 0
+        lastcolumn = False
         for row in self.mapar:
             column=0
-            for num in self.mapar[row]:
-                if self.mapar[rown][column]==self.mapar[row][(column+1)]:
-                    pass
+            for num in self.mapar[rownum]:
+                try:
+                    self.mapar[rownum][(column+1)]
+                except:
+                    lastcolumn=True
+                    print('cry')
+                if lastcolumn == False:
+                    if self.mapar[rownum][column]==self.mapar[rownum][(column+1)]:
+                        length+=1
+                    else:
+                        self.drawrect(rownum,column,length,num)
                 else:
-                    drawrect(row,column,length,num)
+                    self.drawrect(rownum,column,length,num)
+                    lastcolumn = False
                 column+=1
+            rownum+=1
                     
     def drawrect(self,row,column,length,colorcode):
-        pass
+        print(row)
+        if colorcode == 0:
+            pass
+        if colorcode == 1:
         
         
 class mainG:
@@ -109,6 +121,7 @@ class mainG:
         self.cube=Cube(self.width,self.height)
         self.allsprites = pygame.sprite.RenderPlain((self.cube))
         self.level = Level()
+        self.level.GetLayout()
         self.level.drawMap()
 
 def main():
