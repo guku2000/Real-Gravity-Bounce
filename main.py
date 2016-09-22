@@ -53,6 +53,7 @@ class Cube(pygame.sprite.Sprite):
         
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,color,x,y,length):
+        self.x,self.y = x,y
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
         self.image.fill(color)
