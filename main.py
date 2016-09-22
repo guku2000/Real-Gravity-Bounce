@@ -19,29 +19,8 @@ class Cube(pygame.sprite.Sprite):
         self.v = 0
         self.rect.topleft= (self.x, self.y)
         self.gravitydown = True
-        
+        0
     def update(self):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_h:
-                    print("g switch")
-                    self.v = 0
-                    if self.gravitydown == True:
-                        self.gravitydown = False
-                    elif self.gravitydown == False:
-                        self.gravitydown = True
-                if event.key == pygame.K_g:
-                    print("c switch")
-                    if self.color == 'red':
-                        self.color = 'green'
-                        self.image= pygame.image.load('resources/sprites/cube/green.png')
-                    elif self.color == 'green':
-                        self.color = 'blue'
-                        self.image= pygame.image.load('resources/sprites/cube/blue.png')
-                    elif self.color == 'blue':
-                        self.color = 'red'
-                        self.image= pygame.image.load('resources/sprites/cube/red.png')
-        
         if self.gravitydown == True:
             if self.rect.bottom< self.height:
                 self.v+=.4
@@ -52,10 +31,37 @@ class Cube(pygame.sprite.Sprite):
                 self.v-=.4
                 self.y+=self.v
         self.rect.topleft = self.x,self.y
+    def switchgrav(self):
+        print("g switch")
+        self.v = 0
+        if self.gravitydown == True:
+            self.gravitydown = False
+        elif self.gravitydown == False:
+            self.gravitydown = True
+
+    def switchcol(self):
+        print("c switch")
+        if self.color == 'red':
+            self.color = 'green'
+            self.image= pygame.image.load('resources/sprites/cube/green.png')
+        elif self.color == 'green':
+            self.color = 'blue'
+            self.image= pygame.image.load('resources/sprites/cube/blue.png')
+        elif self.color == 'blue':
+            self.color = 'red'
+            self.image= pygame.image.load('resources/sprites/cube/red.png')
+        
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,color,x,y,length):
-        self.rect = pygame.Rect(x,y,length,32)
-        self.image = pygame.fill((0,0,0),self.rect)
+        print(color)
+        self.x = x
+        self.y = y
+        print(length)
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([length*32,32])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        print(str(x) +","+str(y))
 class mainG:
     def __init__(self,width =1024,height=512):
         pygame.init()
@@ -69,7 +75,14 @@ class mainG:
         self.LoadGame()
         while 1:
             self.screen.fill((255,255,255))
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_h:
+                        self.cube.switchgrav()
+                    if event.key == pygame.K_g:
+                        self.cube.switchcol()
             self.allsprites.update()
+            self.level_sprites.draw(self.screen)
             self.allsprites.draw(self.screen)
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
@@ -107,26 +120,33 @@ class mainG:
                     self.mapar[rownum][(column+1)]
                 except:
                     lastcolumn=True
-                    print('cry')
+                if length>=16:
+                    lastcolumn = True
                 if lastcolumn == False:
                     if self.mapar[rownum][column]==self.mapar[rownum][(column+1)]:
                         length+=1
+                        
                     else:
                         self.drawrect(rownum,column,length,num)
+                        length = 0
                 else:
                     self.drawrect(rownum,column,length,num)
+                    length=0
                     lastcolumn = False
                 column+=1
             rownum+=1
                     
     def drawrect(self,row,column,length,colorcode):
+        x=(column-length)*32
+        y=row*32
         self.level_sprites = pygame.sprite.Group()
-        print(row)
         if colorcode == 0:
             pass
         if colorcode == 1:
             print("black")
-            pygame.draw.rect(self.screen,(255,0,0),((row-length)*32,column*32,(length+1)*32,32),10)
+            brect=rectsprite((0,0,0),x,y,length+1)
+            self.level_sprites.add(brect)
+            #pygame.draw.rect(self.screen,(255,0,0),((row-length)*32,column*32,(length+1)*32,32),10)
 
 def main():
     maingame = mainG()
