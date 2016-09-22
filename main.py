@@ -54,19 +54,11 @@ class Cube(pygame.sprite.Sprite):
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,color,x,y,length):
         pygame.sprite.Sprite.__init__(self)
-        print('why')
-        """self.image = pygame.Surface((32,32))
-        self.image.fill((0,0,0))
+        self.image = pygame.Surface((length*32,32))
+        self.image.fill(color)
         self.rect = self.image.get_rect()
-        self.rect.topleft = (100,100)"""
-        self.image= pygame.image.load('resources/sprites/cube/red.png')
-        self.rect = self.image.get_rect()
-        self.x,self.y = 100,100
-        self.v = 0
-        self.rect.topleft= (self.x, self.y)
-        
-        
-    def update():
+        self.rect.topleft = (self.x,self.y)
+    def update(self):
         print("help")
 class mainG:
     def __init__(self,width =1024,height=512):
@@ -98,7 +90,8 @@ class mainG:
     def LoadGame(self):
         #load everything we need
         self.cube=Cube(self.width,self.height)
-        self.allsprites = pygame.sprite.GroupSingle((self.cube))
+        self.allsprites = pygame.sprite.Group((self.cube))
+        self.level_s = pygame.sprite.Group()
         self.GetLayout()
         self.drawMap()
 
@@ -146,7 +139,6 @@ class mainG:
         x=(column-length)*32
         y=row*32
         length+=1
-        self.level_s = pygame.sprite.Group()
         if colorcode == 0:
             pass
         if colorcode == 1:
