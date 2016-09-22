@@ -53,15 +53,21 @@ class Cube(pygame.sprite.Sprite):
         
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,color,x,y,length):
-        print(color)
-        self.x = x
-        self.y = y
-        print(length)
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([length*32,32])
-        self.image.fill(color)
+        print('why')
+        """self.image = pygame.Surface((32,32))
+        self.image.fill((0,0,0))
         self.rect = self.image.get_rect()
-        print(str(x) +","+str(y))
+        self.rect.topleft = (100,100)"""
+        self.image= pygame.image.load('resources/sprites/cube/red.png')
+        self.rect = self.image.get_rect()
+        self.x,self.y = 100,100
+        self.v = 0
+        self.rect.topleft= (self.x, self.y)
+        
+        
+    def update():
+        print("help")
 class mainG:
     def __init__(self,width =1024,height=512):
         pygame.init()
@@ -82,17 +88,17 @@ class mainG:
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
             self.allsprites.update()
-            self.level_sprites.draw(self.screen)
+            self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     sys.exit()
-            pygame.display.update()
+            pygame.display.flip()
             self.clock.tick(60)
     def LoadGame(self):
         #load everything we need
         self.cube=Cube(self.width,self.height)
-        self.allsprites = pygame.sprite.RenderPlain((self.cube))
+        self.allsprites = pygame.sprite.GroupSingle((self.cube))
         self.GetLayout()
         self.drawMap()
 
@@ -139,14 +145,14 @@ class mainG:
     def drawrect(self,row,column,length,colorcode):
         x=(column-length)*32
         y=row*32
-        self.level_sprites = pygame.sprite.Group()
+        length+=1
+        self.level_s = pygame.sprite.Group()
         if colorcode == 0:
             pass
         if colorcode == 1:
             print("black")
-            brect=rectsprite((0,0,0),x,y,length+1)
-            self.level_sprites.add(brect)
-            #pygame.draw.rect(self.screen,(255,0,0),((row-length)*32,column*32,(length+1)*32,32),10)
+            brect=rectsprite((0,0,0),x,y,length)
+            self.level_s.add(brect)
 
 def main():
     maingame = mainG()
