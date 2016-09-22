@@ -51,7 +51,11 @@ class Cube(pygame.sprite.Sprite):
             if self.rect.top>0:
                 self.v-=.4
                 self.y+=self.v
-        self.rect.topleft = self.x,self.y 
+        self.rect.topleft = self.x,self.y
+class rectsprite(pygame.sprite.Sprite):
+    def __init__(self,color,x,y,length):
+        self.rect = pygame.Rect(x,y,length,32)
+        self.image = pygame.fill((0,0,0),self.rect)
 class mainG:
     def __init__(self,width =1024,height=512):
         pygame.init()
@@ -121,7 +125,7 @@ class mainG:
         if colorcode == 0:
             pass
         if colorcode == 1:
-            print("red")
+            print("black")
             pygame.draw.rect(self.screen,(255,0,0),((row-length)*32,column*32,(length+1)*32,32),10)
 
 def main():
