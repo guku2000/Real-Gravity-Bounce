@@ -11,6 +11,11 @@ class Cube(pygame.sprite.Sprite):
     def __init__(self,width,height):
         self.width = width
         self.height = height
+        self.coli = False
+        self.botcol = False
+        self.topcol = False
+        self.rightcol = False
+        self.leftcol = False
         pygame.sprite.Sprite.__init__(self)
         self.color = "red"
         self.image= pygame.image.load('resources/sprites/cube/red.png')
@@ -19,7 +24,6 @@ class Cube(pygame.sprite.Sprite):
         self.v = 0
         self.rect.topleft= (self.x, self.y)
         self.gravitydown = True
-        0
     def update(self):
         if self.gravitydown == True:
             if self.rect.bottom<self.height:
@@ -27,7 +31,6 @@ class Cube(pygame.sprite.Sprite):
                 self.y+=self.v
             elif self.rect.bottom>= self.height:
                 self.rect.bottom=self.height
-
         elif self.gravitydown == False:
             if self.rect.top>0:
                 self.v-=.4
@@ -39,6 +42,11 @@ class Cube(pygame.sprite.Sprite):
             self.rect.bottom=self.height
         elif self.rect.top<=0:
             self.rect.top = 0
+
+    def cbc(self):
+        if self.y>0:
+            self.getblocktype
+            
             
     def switchgrav(self):
         print("g switch")
@@ -59,7 +67,7 @@ class Cube(pygame.sprite.Sprite):
         elif self.color == 'blue':
             self.color = 'red'
             self.image= pygame.image.load('resources/sprites/cube/red.png')
-        
+
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,rtype,x,y,length):
         self.x,self.y = x,y
@@ -98,9 +106,9 @@ class mainG:
                         self.cube.switchgrav()
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
-            self.allsprites.update()
             if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
                 self.detcode()
+            self.allsprites.update()
             self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
             for event in pygame.event.get():
@@ -132,18 +140,26 @@ class mainG:
             linen+=1
     def detcode(self):
         collisions = pygame.sprite.spritecollide(self.cube,self.level_s,False)
-
+        
         for i in collisions:
             if i.rtype == 'black':
-                #print ('danger')
-                print(self.getblocktype(0,0))
+                self.cube.cbc
                 
             if i.rtype == 'red':
-                #print ('nodanger')
-                print(self.getblocktype(1,0))
+                if self.cube.color!= 'red':
+                    self.cube.crc
             
     def getblocktype(self,x,y):
-        return self.mapar[x][y]
+        bx=int(x/32)
+        by=int(y/32)
+        if self.mapar[bx][by] == 0:
+            return 'white'
+        elif self.mapar[bx][by] == 1:
+            return 'black'
+        elif self.mapar[bx][by] == 3:
+            return 'red'
+        else:
+            return 'white'
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
