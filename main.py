@@ -3,7 +3,7 @@ import os, sys
 from pygame.locals import *
 from pygame import draw
 #Made by Julian -_-
-#This is a 32bit game resulting in a window that is 32x16 wide
+#This is a 32bit game resulting in a window that is 32x16 blocks wide
 if not pygame.font: print ('Warning, fonts disabled')
 if not pygame.mixer: print ('Warning, sound disabled')
 print (os.getcwd())
@@ -116,6 +116,8 @@ class mainG:
         self.GetLayout()
         self.drawMap()
 
+    
+
     def GetLayout(self,lvln = 1):
         self.lvln=lvln
         print("getting layout")
@@ -129,7 +131,16 @@ class mainG:
                     self.mapar[linen].append(int(unit))
             linen+=1
     def detcode(self):
-        print("Danger")
+        collisions = pygame.sprite.spritecollide(self.cube,self.level_s,False)
+
+        for i in collisions:
+            if i.rtype == 'black':
+                #print ('danger')
+                
+            if i.rtype == 'red':
+                #print ('nodanger')
+            
+        
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
@@ -165,9 +176,21 @@ class mainG:
         if colorcode == 0:
             pass
         if colorcode == 1:
-            print("black")
+            #print("black")
             brect=rectsprite('black',x,y,length)
             self.level_s.add(brect)
+        if colorcode == 3:
+            #print ("red")
+            rrect=rectsprite('red',x,y,length)
+            self.level_s.add(rrect)
+        if colorcode == 4:
+            #print ("green")
+            grect=rectsprite('green',x,y,length)
+            self.level_s.add(grect)
+        if colorcode == 5:
+            #print ("green")
+            grect=rectsprite('blue',x,y,length)
+            self.level_s.add(grect)
 
 def main():
     maingame = mainG()
