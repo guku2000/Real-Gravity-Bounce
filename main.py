@@ -22,15 +22,24 @@ class Cube(pygame.sprite.Sprite):
         0
     def update(self):
         if self.gravitydown == True:
-            if self.rect.bottom< self.height:
+            if self.rect.bottom<self.height:
                 self.v+=.4
                 self.y+=self.v
+            elif self.rect.bottom>= self.height:
+                self.rect.bottom=self.height
 
         elif self.gravitydown == False:
             if self.rect.top>0:
                 self.v-=.4
                 self.y+=self.v
+            elif self.rect.top<0:
+                self.rect.top = 0
         self.rect.topleft = self.x,self.y
+        if self.rect.bottom> self.height:
+            self.rect.bottom=self.height
+        elif self.rect.top<=0:
+            self.rect.top = 0
+            
     def switchgrav(self):
         print("g switch")
         self.v = 0
@@ -52,11 +61,20 @@ class Cube(pygame.sprite.Sprite):
             self.image= pygame.image.load('resources/sprites/cube/red.png')
         
 class rectsprite(pygame.sprite.Sprite):
-    def __init__(self,color,x,y,length):
+    def __init__(self,rtype,x,y,length):
         self.x,self.y = x,y
+        self.rtype = rtype
+        if rtype == 'black':
+            self.color = (0,0,0)
+        elif rtype == 'red':
+            self.color = (255,0,0)
+        elif rtype == 'green':
+            self.color = (0,255,0)
+        elif rtype == 'blue':
+            self.color = (0,0,255)
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
-        self.image.fill(color)
+        self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x,self.y)
     def update(self):
@@ -81,6 +99,8 @@ class mainG:
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
             self.allsprites.update()
+            if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
+                self.detcode()
             self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
             for event in pygame.event.get():
@@ -108,7 +128,8 @@ class mainG:
                 if unit != '\n':
                     self.mapar[linen].append(int(unit))
             linen+=1
-
+    def detcode(self):
+        print("Danger")
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
@@ -137,6 +158,7 @@ class mainG:
             rownum+=1
                     
     def drawrect(self,row,column,length,colorcode):
+        #This sends commands to build sprites for the map
         x=(column-length)*32
         y=row*32
         length+=1
@@ -144,7 +166,7 @@ class mainG:
             pass
         if colorcode == 1:
             print("black")
-            brect=rectsprite((0,0,0),x,y,length)
+            brect=rectsprite('black',x,y,length)
             self.level_s.add(brect)
 
 def main():
