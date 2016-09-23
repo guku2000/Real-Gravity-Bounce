@@ -11,7 +11,6 @@ class Cube(pygame.sprite.Sprite):
     def __init__(self,width,height):
         self.width = width
         self.height = height
-        self.coli = False
         self.botcol = False
         self.topcol = False
         self.rightcol = False
@@ -21,31 +20,35 @@ class Cube(pygame.sprite.Sprite):
         self.image= pygame.image.load('resources/sprites/cube/red.png')
         self.rect = self.image.get_rect()
         self.x,self.y = self.width//4, self.height//2
-        self.v = 0
-        self.rect.topleft= (self.x, self.y)
+        self.yv = 0
+        self.rect.center= (self.x, self.y)
         self.gravitydown = True
     def update(self):
+        if self.yv>=5:
+            self.yv=5
+        elif self.yv<=-5:
+            self.yv=-5
         if self.gravitydown == True:
-            if self.rect.bottom<self.height:
-                self.v+=.4
-                self.y+=self.v
-            elif self.rect.bottom>= self.height:
-                self.rect.bottom=self.height
+            if self.botcol==True:
+                self.yv=-self.yv
+                self.y+=self.yv
+            else:
+                self.yv+=.4
+                self.y+=self.yv
         elif self.gravitydown == False:
-            if self.rect.top>0:
-                self.v-=.4
-                self.y+=self.v
-            elif self.rect.top<0:
-                self.rect.top = 0
-        self.rect.topleft = self.x,self.y
-        if self.rect.bottom> self.height:
-            self.rect.bottom=self.height
-        elif self.rect.top<=0:
-            self.rect.top = 0
+            if self.topcol == True:
+                self.yv=-self.yv
+                self.y+=self.yv
+            else:
+                self.yv-=.4
+                self.y+=self.yv
+        self.rect.center = self.x,self.y
+        self.botcol = False
+        self.topcol = False
+        self.rightcol = False
+        self.leftcol = False
+        
 
-    def cbc(self):
-        if self.y>0:
-            self.getblocktype
             
             
     def switchgrav(self):
@@ -99,6 +102,7 @@ class mainG:
     def MainLoop(self):
         self.LoadGame()
         while 1:
+            
             self.screen.fill((255,255,255))
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -139,25 +143,47 @@ class mainG:
                     self.mapar[linen].append(int(unit))
             linen+=1
     def detcode(self):
+        
         collisions = pygame.sprite.spritecollide(self.cube,self.level_s,False)
         
         for i in collisions:
             if i.rtype == 'black':
-                self.cube.cbc
+                if self.cube.yv>0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black':
+                        self.cube.botcol=True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
+                        self.cube.botcol=True
+                elif self.cube.yv<0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black':
+                        self.cube.topcol= True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
+                        self.cube.topcol = True
                 
             if i.rtype == 'red':
-                if self.cube.color!= 'red':
-                    self.cube.crc
+                if self.cube.yv>0:
+                    
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='red':
+                        self.cube.botcol=True
+                        
+                    elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='red':
+                        self.cube.botcol=True
+                elif self.cube.yv<0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red':
+                        self.cube.topcol= True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
+                        self.cube.topcol = True
             
     def getblocktype(self,x,y):
-        bx=int(x/32)
-        by=int(y/32)
-        if self.mapar[bx][by] == 0:
-            return 'white'
-        elif self.mapar[bx][by] == 1:
-            return 'black'
-        elif self.mapar[bx][by] == 3:
-            return 'red'
+        by=int(x/32-1)
+        bx=int(y/32-1)
+        print(self.mapar[15][15])
+        if bx>=0 and bx<=15 and by>=0:
+            if self.mapar[bx][by] == 0:
+                return 'white'
+            elif self.mapar[bx][by] == 1:
+                return 'black'
+            elif self.mapar[bx][by] == 3:
+                return 'red'
         else:
             return 'white'
     def drawMap(self,lvln = 1):
