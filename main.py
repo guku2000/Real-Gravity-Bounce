@@ -136,11 +136,14 @@ class mainG:
         for i in collisions:
             if i.rtype == 'black':
                 #print ('danger')
+                print(self.getblocktype(0,0))
                 
             if i.rtype == 'red':
                 #print ('nodanger')
+                print(self.getblocktype(1,0))
             
-        
+    def getblocktype(self,x,y):
+        return self.mapar[x][y]
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
