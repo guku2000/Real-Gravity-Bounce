@@ -52,11 +52,15 @@ class Cube(pygame.sprite.Sprite):
             self.image= pygame.image.load('resources/sprites/cube/red.png')
         
 class rectsprite(pygame.sprite.Sprite):
-    def __init__(self,color,x,y,length):
+    def __init__(self,rtype,x,y,length):
         self.x,self.y = x,y
+        self.rtype=rtype
+        if rtype == 'black':
+            self.color=(0,0,0)
+            
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
-        self.image.fill(color)
+        self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x,self.y)
     def update(self):
@@ -143,8 +147,7 @@ class mainG:
         if colorcode == 0:
             pass
         if colorcode == 1:
-            print("black")
-            brect=rectsprite((0,0,0),x,y,length)
+            brect=rectsprite('black',x,y,length)
             self.level_s.add(brect)
 
 def main():
