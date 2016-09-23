@@ -3,7 +3,7 @@ import os, sys
 from pygame.locals import *
 from pygame import draw
 #Made by Julian -_-
-#This is a 32bit game resulting in a window that is 32x16 wide
+#This is a 32bit game resulting in a window that is 32x16 blocks wide
 if not pygame.font: print ('Warning, fonts disabled')
 if not pygame.mixer: print ('Warning, sound disabled')
 print (os.getcwd())
@@ -11,26 +11,46 @@ class Cube(pygame.sprite.Sprite):
     def __init__(self,width,height):
         self.width = width
         self.height = height
+        self.botcol = False
+        self.topcol = False
+        self.rightcol = False
+        self.leftcol = False
         pygame.sprite.Sprite.__init__(self)
         self.color = "red"
         self.image= pygame.image.load('resources/sprites/cube/red.png')
         self.rect = self.image.get_rect()
         self.x,self.y = self.width//4, self.height//2
-        self.v = 0
-        self.rect.topleft= (self.x, self.y)
+        self.yv = 0
+        self.rect.center= (self.x, self.y)
         self.gravitydown = True
-        0
     def update(self):
+        if self.yv>=5:
+            self.yv=5
+        elif self.yv<=-5:
+            self.yv=-5
         if self.gravitydown == True:
-            if self.rect.bottom< self.height:
-                self.v+=.4
-                self.y+=self.v
-
+            if self.botcol==True:
+                self.yv=-self.yv
+                self.y+=self.yv
+            else:
+                self.yv+=.4
+                self.y+=self.yv
         elif self.gravitydown == False:
-            if self.rect.top>0:
-                self.v-=.4
-                self.y+=self.v
-        self.rect.topleft = self.x,self.y
+            if self.topcol == True:
+                self.yv=-self.yv
+                self.y+=self.yv
+            else:
+                self.yv-=.4
+                self.y+=self.yv
+        self.rect.center = self.x,self.y
+        self.botcol = False
+        self.topcol = False
+        self.rightcol = False
+        self.leftcol = False
+        
+
+            
+            
     def switchgrav(self):
         print("g switch")
         self.v = 0
@@ -50,14 +70,26 @@ class Cube(pygame.sprite.Sprite):
         elif self.color == 'blue':
             self.color = 'red'
             self.image= pygame.image.load('resources/sprites/cube/red.png')
-        
+
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,rtype,x,y,length):
         self.x,self.y = x,y
+<<<<<<< HEAD
         self.rtype=rtype
         if rtype == 'black':
             self.color=(0,0,0)
             
+=======
+        self.rtype = rtype
+        if rtype == 'black':
+            self.color = (0,0,0)
+        elif rtype == 'red':
+            self.color = (255,0,0)
+        elif rtype == 'green':
+            self.color = (0,255,0)
+        elif rtype == 'blue':
+            self.color = (0,0,255)
+>>>>>>> origin/master
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
         self.image.fill(self.color)
@@ -77,6 +109,7 @@ class mainG:
     def MainLoop(self):
         self.LoadGame()
         while 1:
+            
             self.screen.fill((255,255,255))
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -84,6 +117,8 @@ class mainG:
                         self.cube.switchgrav()
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
+            if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
+                self.detcode()
             self.allsprites.update()
             self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
@@ -100,6 +135,8 @@ class mainG:
         self.GetLayout()
         self.drawMap()
 
+    
+
     def GetLayout(self,lvln = 1):
         self.lvln=lvln
         print("getting layout")
@@ -112,7 +149,50 @@ class mainG:
                 if unit != '\n':
                     self.mapar[linen].append(int(unit))
             linen+=1
-
+    def detcode(self):
+        
+        collisions = pygame.sprite.spritecollide(self.cube,self.level_s,False)
+        
+        for i in collisions:
+            if i.rtype == 'black':
+                if self.cube.yv>0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black':
+                        self.cube.botcol=True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
+                        self.cube.botcol=True
+                elif self.cube.yv<0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black':
+                        self.cube.topcol= True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
+                        self.cube.topcol = True
+                
+            if i.rtype == 'red':
+                if self.cube.yv>0:
+                    
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='red':
+                        self.cube.botcol=True
+                        
+                    elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='red':
+                        self.cube.botcol=True
+                elif self.cube.yv<0:
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red':
+                        self.cube.topcol= True
+                    elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
+                        self.cube.topcol = True
+            
+    def getblocktype(self,x,y):
+        by=int(x/32-1)
+        bx=int(y/32-1)
+        print(self.mapar[15][15])
+        if bx>=0 and bx<=15 and by>=0:
+            if self.mapar[bx][by] == 0:
+                return 'white'
+            elif self.mapar[bx][by] == 1:
+                return 'black'
+            elif self.mapar[bx][by] == 3:
+                return 'red'
+        else:
+            return 'white'
     def drawMap(self,lvln = 1):
         length=0
         rownum = 0
@@ -141,14 +221,31 @@ class mainG:
             rownum+=1
                     
     def drawrect(self,row,column,length,colorcode):
+        #This sends commands to build sprites for the map
         x=(column-length)*32
         y=row*32
         length+=1
         if colorcode == 0:
             pass
         if colorcode == 1:
+<<<<<<< HEAD
+=======
+            #print("black")
+>>>>>>> origin/master
             brect=rectsprite('black',x,y,length)
             self.level_s.add(brect)
+        if colorcode == 3:
+            #print ("red")
+            rrect=rectsprite('red',x,y,length)
+            self.level_s.add(rrect)
+        if colorcode == 4:
+            #print ("green")
+            grect=rectsprite('green',x,y,length)
+            self.level_s.add(grect)
+        if colorcode == 5:
+            #print ("green")
+            grect=rectsprite('blue',x,y,length)
+            self.level_s.add(grect)
 
 def main():
     maingame = mainG()
