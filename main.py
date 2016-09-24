@@ -58,7 +58,7 @@ class Cube(pygame.sprite.Sprite):
             
             
     def switchgrav(self):
-        print("g switch")
+        #print("g switch")
         self.yv=0
         self.v = 0
         if self.gravitydown == True:
@@ -67,7 +67,7 @@ class Cube(pygame.sprite.Sprite):
             self.gravitydown = True
 
     def switchcol(self):
-        print("c switch")
+        #print("c switch")
         if self.color == 'red':
             self.color = 'green'
             self.image= pygame.image.load('resources/sprites/cube/green.png')
@@ -80,6 +80,8 @@ class Cube(pygame.sprite.Sprite):
 
 class rectsprite(pygame.sprite.Sprite):
     def __init__(self,rtype,x,y,length):
+        self.mover = False
+        self.vx = 0
         self.x,self.y = x,y
         self.rtype=rtype
         if rtype == 'black':
@@ -93,13 +95,20 @@ class rectsprite(pygame.sprite.Sprite):
             self.color = (0,255,0)
         elif rtype == 'blue':
             self.color = (0,0,255)
+        elif rtype == 'gold':
+            self.color = (255,165,0)
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x,self.y)
-    def update(self):
-        print("help")
+    def update(self, movepls = False):
+        if movepls == True:
+            if self.vx<=5:
+                self.vx +=.05
+            self.x-=self.vx
+            self.rect.left = self.x
+        
 class mainG:
     def __init__(self,width =1024,height=512):
         pygame.init()
@@ -120,9 +129,14 @@ class mainG:
                         self.cube.switchgrav()
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
+            self.movemap()
             if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
                 self.detcode()
-            self.allsprites.update()
+            if self.done == False:
+                self.allsprites.update()
+                self.level_s.update()
+            else:
+                print('done')
             self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
             for event in pygame.event.get():
@@ -137,9 +151,12 @@ class mainG:
         self.level_s = pygame.sprite.Group()
         self.GetLayout()
         self.drawMap()
+        self.mapmove = True
+        self.done = False
 
-    
-
+    def movemap(self):
+        if self.mapmove == True:
+            self.level_s.update(True)
     def GetLayout(self,lvln = 1):
         self.lvln=lvln
         print("getting layout")
@@ -173,7 +190,6 @@ class mainG:
                 if self.cube.color!='red':
                     if self.cube.yv>0:
                         if self.getblocktype(self.cube.x-15,self.cube.y+16)=='red':
-                            print('hello')
                             self.cube.botcol=True
                         elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='red':
                             self.cube.botcol=True
@@ -182,6 +198,9 @@ class mainG:
                             self.cube.topcol= True
                         elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
                             self.cube.topcol = True
+
+            if i.rtype == 'gold':
+                self.done = True
             
     def getblocktype(self,x,y):
         by=int(x/32)
@@ -244,8 +263,11 @@ class mainG:
             self.level_s.add(grect)
         if colorcode == 5:
             #print ("green")
-            grect=rectsprite('blue',x,y,length)
-            self.level_s.add(grect)
+            blrect=rectsprite('blue',x,y,length)
+            self.level_s.add(blrect)
+        if colorcode == 6:
+            wrect = rectsprite('gold',x,y,length)
+            self.level_s.add(wrect)
 
 def main():
     maingame = mainG()
