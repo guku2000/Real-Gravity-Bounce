@@ -176,28 +176,32 @@ class mainG:
         for i in collisions:
             if i.rtype == 'black':
                 if self.cube.yv>0:
-                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black':
-                        self.cube.botcol=True
-                    elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
                         self.cube.botcol=True
                 elif self.cube.yv<0:
-                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black':
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
                         self.cube.topcol= True
-                    elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
-                        self.cube.topcol = True
-                
+                if i.vx>0:
+                    if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'black' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'black':
+                        self.cube.rightcol = True
+                elif i.vx<0:
+                    if self.getblocktype(self.cube.x-16,self.cube.y+15) == 'black' or self.getblocktype(self.cube.x-16,self.cube.y-15)== 'black':
+                        self.cube.leftcol = True
             if i.rtype == 'red':
                 if self.cube.color!='red':
                     if self.cube.yv>0:
-                        if self.getblocktype(self.cube.x-15,self.cube.y+16)=='red':
-                            self.cube.botcol=True
-                        elif self.getblocktype(self.cube.x+15,self.cube.y+16)=='red':
+                        if self.getblocktype(self.cube.x-15,self.cube.y+16)=='red' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='red':
                             self.cube.botcol=True
                     elif self.cube.yv<0:
-                        if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red':
+                        if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
                             self.cube.topcol= True
-                        elif self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
-                            self.cube.topcol = True
+                    if i.vx>0:
+                        if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'red':
+                            self.cube.rightcol = True
+                            print('yay')
+                    elif i.vx<0:
+                        if self.getblocktype(self.cube.x-16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x-16,self.cube.y-15)== 'red':
+                            self.cube.leftcol = True
 
             if i.rtype == 'gold':
                 self.done = True
