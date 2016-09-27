@@ -84,6 +84,7 @@ class rectsprite(pygame.sprite.Sprite):
         self.vx = 0
         self.x,self.y = x,y
         self.rtype=rtype
+        self.bounce = False
         if rtype == 'black':
             self.color=(0,0,0)
         self.rtype = rtype
@@ -102,15 +103,18 @@ class rectsprite(pygame.sprite.Sprite):
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x,self.y)
-    def update(self, movepls = False):
+    def update(self, movepls = False, bounce = False):
+        if bounce == True:
+            self.vx = -5
         if movepls == True:
             if self.vx<=5:
                 self.vx +=.05
             self.x-=self.vx
             self.rect.left = self.x
-        
+            
 class mainG:
     def __init__(self,width =1024,height=512):
+        self.xoffset=0
         pygame.init()
         self.width = width
         self.height = height
@@ -196,25 +200,29 @@ class mainG:
                         if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
                             self.cube.topcol= True
                     if i.vx>0:
+                        print(self.getblocktype(self.cube.x+16,self.cube.y+15))
                         if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'red':
-                            self.cube.rightcol = True
+                            self.level_s.bounce = True
                             print('yay')
                     elif i.vx<0:
                         if self.getblocktype(self.cube.x-16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x-16,self.cube.y-15)== 'red':
                             self.cube.leftcol = True
+                            self.level_s.bounce = True
 
             if i.rtype == 'gold':
                 self.done = True
             
     def getblocktype(self,x,y):
-        by=int(x/32)
-        bx=int(y/32)
-        if bx>=0 and bx<=15 and by>=0:
-            if self.mapar[bx][by] == 0:
+        x+= self.xoffset
+        bc=int(x/32)
+        br=int(y/32)
+        print("("+str(br)+','+str(bc)+')')
+        if br>=0 and br<=15 and bc>=0:
+            if self.mapar[br][bc] == 0:
                 return 'white'
-            elif self.mapar[bx][by] == 1:
+            elif self.mapar[br][bc] == 1:
                 return 'black'
-            elif self.mapar[bx][by] == 3:
+            elif self.mapar[br][bc] == 3:
                 return 'red'
         else:
             return 'white'
