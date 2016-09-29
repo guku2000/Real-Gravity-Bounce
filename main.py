@@ -156,7 +156,7 @@ class mainG:
 
     def movemap(self):
         if self.bounce == True:
-            self.vx = -5
+            self.vx = -.5*self.vx
             self.bounce= False
         if self.mapmove == True:
             if self.vx<=5:
