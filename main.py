@@ -84,19 +84,16 @@ class rectsprite(pygame.sprite.Sprite):
         self.vx = 0
         self.x,self.y = x,y
         self.rtype=rtype
-        self.bounce = False
-        if rtype == 'black':
-            self.color=(0,0,0)
         self.rtype = rtype
-        if rtype == 'black':
+        if self.rtype == 'black':
             self.color = (0,0,0)
-        elif rtype == 'red':
+        elif self.rtype == 'red':
             self.color = (255,0,0)
-        elif rtype == 'green':
+        elif self.rtype == 'green':
             self.color = (0,255,0)
-        elif rtype == 'blue':
+        elif self.rtype == 'blue':
             self.color = (0,0,255)
-        elif rtype == 'gold':
+        elif self.rtype == 'gold':
             self.color = (255,165,0)
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((length*32,32))
@@ -180,23 +177,23 @@ class mainG:
                     self.mapar[linen].append(int(unit))
             linen+=1
     def detcode(self):
-        
         collisions = pygame.sprite.spritecollide(self.cube,self.level_s,False)
-        
         for i in collisions:
             if i.rtype == 'black':
                 if self.cube.yv>0:
-                    if self.getblocktype(self.cube.x-16,self.cube.y+16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
+                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
                         self.cube.botcol=True
                 elif self.cube.yv<0:
-                    if self.getblocktype(self.cube.x-16,self.cube.y-16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
+                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
                         self.cube.topcol= True
                 if i.vx>0:
-                    if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'black' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'black':
+                    if self.getblocktype(self.cube.x+16,self.cube.y+10) == 'black' or self.getblocktype(self.cube.x+16,self.cube.y-10)== 'black':
                         self.cube.rightcol = True
+                        self.bounce = True
                 elif i.vx<0:
-                    if self.getblocktype(self.cube.x-16,self.cube.y+15) == 'black' or self.getblocktype(self.cube.x-16,self.cube.y-15)== 'black':
+                    if self.getblocktype(self.cube.x-16,self.cube.y+10) == 'black' or self.getblocktype(self.cube.x-16,self.cube.y-10)== 'black':
                         self.cube.leftcol = True
+                        self.bounce = True
             if i.rtype == 'red':
                 if self.cube.color!='red':
                     if self.cube.yv>0:
@@ -206,13 +203,42 @@ class mainG:
                         if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
                             self.cube.topcol= True
                     if i.vx>0:
-                        if self.getblocktype(self.cube.x+15,self.cube.y+16) == 'red' or self.getblocktype(self.cube.x+15,self.cube.y-16)== 'red':
+                        if self.getblocktype(self.cube.x+16,self.cube.y+10) == 'red' or self.getblocktype(self.cube.x+16,self.cube.y-10)== 'red':
                             self.bounce = True
                     elif i.vx<0:
-                        if self.getblocktype(self.cube.x-15,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x-15,self.cube.y-15)== 'red':
+                        if self.getblocktype(self.cube.x-16,self.cube.y+10) == 'red' or self.getblocktype(self.cube.x-16,self.cube.y-10)== 'red':
                             self.cube.leftcol = True
                             self.bounce = True
-
+            if i.rtype == 'green':
+                if self.cube.color!='green':
+                    if self.cube.yv>0:
+                        if self.getblocktype(self.cube.x-15,self.cube.y+16)=='green' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='green':
+                            self.cube.botcol=True
+                    elif self.cube.yv<0:
+                        if self.getblocktype(self.cube.x-15,self.cube.y-16)=='green' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'green':
+                            self.cube.topcol= True
+                    if i.vx>0:
+                        if self.getblocktype(self.cube.x+16,self.cube.y+10) == 'green' or self.getblocktype(self.cube.x+16,self.cube.y-10)== 'green':
+                            self.bounce = True
+                    elif i.vx<0:
+                        if self.getblocktype(self.cube.x-16,self.cube.y+10) == 'green' or self.getblocktype(self.cube.x-16,self.cube.y-10)== 'green':
+                            self.cube.leftcol = True
+                            self.bounce = True
+            if i.rtype == 'blue':
+                if self.cube.color!='blue':
+                    if self.cube.yv>0:
+                        if self.getblocktype(self.cube.x-15,self.cube.y+16)=='blue' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='blue':
+                            self.cube.botcol=True
+                    elif self.cube.yv<0:
+                        if self.getblocktype(self.cube.x-15,self.cube.y-16)=='blue' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'blue':
+                            self.cube.topcol= True
+                    if i.vx>0:
+                        if self.getblocktype(self.cube.x+16,self.cube.y+10) == 'blue' or self.getblocktype(self.cube.x+16,self.cube.y-10)== 'blue':
+                            self.bounce = True
+                    elif i.vx<0:
+                        if self.getblocktype(self.cube.x-16,self.cube.y+10) == 'blue' or self.getblocktype(self.cube.x-16,self.cube.y-10)== 'blue':
+                            self.cube.leftcol = True
+                            self.bounce = True
             if i.rtype == 'gold':
                 self.done = True
             
@@ -227,6 +253,10 @@ class mainG:
                 return 'black'
             elif self.mapar[br][bc] == 3:
                 return 'red'
+            elif self.mapar[br][bc] == 4:
+                return 'green'
+            elif self.mapar[br][bc] == 5:
+                return 'blue'
         else:
             return 'white'
     def drawMap(self,lvln = 1):
@@ -255,6 +285,7 @@ class mainG:
                     lastcolumn = False
                 column+=1
             rownum+=1
+        print ("Level " + str(lvln)+ " loaded")
                     
     def drawrect(self,row,column,length,colorcode):
         #This sends commands to build sprites for the map
@@ -264,7 +295,6 @@ class mainG:
         if colorcode == 0:
             pass
         if colorcode == 1:
-
             #print("black")
             brect=rectsprite('black',x,y,length)
             self.level_s.add(brect)
