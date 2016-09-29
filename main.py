@@ -103,14 +103,10 @@ class rectsprite(pygame.sprite.Sprite):
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x,self.y)
-    def update(self, movepls = False, bounce = False):
-        if bounce == True:
-            self.vx = -5
-        if movepls == True:
-            if self.vx<=5:
-                self.vx +=.05
-            self.x-=self.vx
-            self.rect.left = self.x
+    def update(self, vx = 0):
+        self.vx = vx
+        self.x -= vx
+        self.rect.left = self.x
             
 class mainG:
     def __init__(self,width =1024,height=512):
@@ -133,16 +129,16 @@ class mainG:
                         self.cube.switchgrav()
                     if event.key == pygame.K_g:
                         self.cube.switchcol()
-            self.movemap()
-            if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
-                self.detcode()
             if self.done == False:
+                self.movemap()
+                if pygame.sprite.groupcollide(self.allsprites,self.level_s,False,False):
+                    self.detcode()
                 self.allsprites.update()
                 self.level_s.update()
-            else:
-                print('done')
             self.level_s.draw(self.screen)
             self.allsprites.draw(self.screen)
+            if self.done == True:
+                self.screen.fill((255,255,255))
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     sys.exit()
@@ -155,12 +151,22 @@ class mainG:
         self.level_s = pygame.sprite.Group()
         self.GetLayout()
         self.drawMap()
+        self.vx = 0
+        self.mapx = 0
         self.mapmove = True
         self.done = False
+        self.bounce = False
 
     def movemap(self):
+        if self.bounce == True:
+            self.vx = -5
+            self.bounce= False
         if self.mapmove == True:
-            self.level_s.update(True)
+            if self.vx<=5:
+                self.vx +=.05
+            self.mapx-=self.vx
+            self.level_s.update(self.vx)
+            
     def GetLayout(self,lvln = 1):
         self.lvln=lvln
         print("getting layout")
@@ -180,10 +186,10 @@ class mainG:
         for i in collisions:
             if i.rtype == 'black':
                 if self.cube.yv>0:
-                    if self.getblocktype(self.cube.x-15,self.cube.y+16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
+                    if self.getblocktype(self.cube.x-16,self.cube.y+16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y+16)=='black':
                         self.cube.botcol=True
                 elif self.cube.yv<0:
-                    if self.getblocktype(self.cube.x-15,self.cube.y-16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
+                    if self.getblocktype(self.cube.x-16,self.cube.y-16)=='black' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'black':
                         self.cube.topcol= True
                 if i.vx>0:
                     if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'black' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'black':
@@ -200,23 +206,20 @@ class mainG:
                         if self.getblocktype(self.cube.x-15,self.cube.y-16)=='red' or self.getblocktype(self.cube.x+15,self.cube.y-16) == 'red':
                             self.cube.topcol= True
                     if i.vx>0:
-                        print(self.getblocktype(self.cube.x+16,self.cube.y+15))
-                        if self.getblocktype(self.cube.x+16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x+16,self.cube.y-15)== 'red':
-                            self.level_s.bounce = True
-                            print('yay')
+                        if self.getblocktype(self.cube.x+15,self.cube.y+16) == 'red' or self.getblocktype(self.cube.x+15,self.cube.y-16)== 'red':
+                            self.bounce = True
                     elif i.vx<0:
-                        if self.getblocktype(self.cube.x-16,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x-16,self.cube.y-15)== 'red':
+                        if self.getblocktype(self.cube.x-15,self.cube.y+15) == 'red' or self.getblocktype(self.cube.x-15,self.cube.y-15)== 'red':
                             self.cube.leftcol = True
-                            self.level_s.bounce = True
+                            self.bounce = True
 
             if i.rtype == 'gold':
                 self.done = True
             
     def getblocktype(self,x,y):
-        x+= self.xoffset
+        x-= self.mapx
         bc=int(x/32)
         br=int(y/32)
-        print("("+str(br)+','+str(bc)+')')
         if br>=0 and br<=15 and bc>=0:
             if self.mapar[br][bc] == 0:
                 return 'white'
