@@ -142,12 +142,15 @@ class mainG:
             pygame.display.flip()
             self.clock.tick(60)
     def LoadGame(self):
+        try:
+            self.level
+        except:
+            self.level = 2
         #load everything we need
         self.cube=Cube(self.width,self.height)
         self.allsprites = pygame.sprite.Group((self.cube))
-        self.level_s = pygame.sprite.Group()
-        self.GetLayout()
-        self.drawMap()
+        self.level_s = pygame.sprite.Group()        
+        self.drawMap(self.level)
         self.vx = 0
         self.mapx = 0
         self.mapmove = True
@@ -260,6 +263,7 @@ class mainG:
         else:
             return 'white'
     def drawMap(self,lvln = 1):
+        self.GetLayout(lvln)
         length=0
         rownum = 0
         lastcolumn = False
