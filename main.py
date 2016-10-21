@@ -143,6 +143,10 @@ class mainG:
                     sys.exit()
             pygame.display.flip()
             self.clock.tick(60)
+    def mainmenuload():
+        while 1:
+            pass
+        
     def LoadGame(self):
         try:
             self.level
